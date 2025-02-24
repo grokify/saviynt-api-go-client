@@ -15,6 +15,7 @@ import (
 
 	"github.com/saviynt/saviynt-api-go-client/delegatedadministration"
 	"github.com/saviynt/saviynt-api-go-client/email"
+	"github.com/saviynt/saviynt-api-go-client/endpoint"
 	"github.com/saviynt/saviynt-api-go-client/filedirectory"
 	"github.com/saviynt/saviynt-api-go-client/jobcontrol"
 	"github.com/saviynt/saviynt-api-go-client/mtlsauthentication"
@@ -54,6 +55,8 @@ type Client struct {
 	transportClient               *transport.APIClient
 	UsersAPI                      *users.UsersAPIService
 	usersClient                   *users.APIClient
+	EndPointAPI                   *endpoint.EndPointAPIService
+	endpointClient                *endpoint.APIClient
 }
 
 func NewClient(ctx context.Context, serverURL string, httpClient *http.Client) *Client {
@@ -78,6 +81,8 @@ func NewClient(ctx context.Context, serverURL string, httpClient *http.Client) *
 	c.TransportAPI = c.transportClient.TransportAPI
 	c.usersClient = newClientUsers(c.APIBaseURL(), c.httpClient)
 	c.UsersAPI = c.usersClient.UsersAPI
+	c.endpointClient = newEndPointClient(c.APIBaseURL(), c.httpClient)
+	c.EndPointAPI = c.endpointClient.EndPointAPI
 	return c
 }
 
@@ -257,4 +262,11 @@ func wrapError(err error, wrapPrefix string) error {
 		return err
 	}
 	return fmt.Errorf("%s: [%w]", wrapPrefix, err)
+}
+
+func newEndPointClient(apiBaseURL string, httpClient *http.Client) *endpoint.APIClient {
+	cfg := endpoint.NewConfiguration()
+	cfg.HTTPClient = httpClient
+	cfg.Servers = endpoint.ServerConfigurations{{URL: apiBaseURL}}
+	return endpoint.NewAPIClient(cfg)
 }
