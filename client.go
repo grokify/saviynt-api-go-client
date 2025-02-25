@@ -56,7 +56,7 @@ type Client struct {
 	UsersAPI                      *users.UsersAPIService
 	usersClient                   *users.APIClient
 	EndPointAPI                   *endpoint.EndPointAPIService
-	endpointclient                *endpoint.APIClient
+	endPointclient                *endpoint.APIClient
 }
 
 func NewClient(ctx context.Context, serverURL string, httpClient *http.Client) *Client {
